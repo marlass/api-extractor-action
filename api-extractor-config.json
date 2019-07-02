@@ -1,0 +1,12 @@
+{
+  "projects": [
+    {
+      "directory": "./dist/assets",
+      "file": "public_api.d.ts"
+    },
+    {
+      "directory": "./dist/storefrontlib",
+      "file": "public_api.d.ts"
+    }
+  ]
+}

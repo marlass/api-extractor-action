@@ -1,0 +1,13 @@
+{
+  "git": {
+    "requireCleanWorkingDir": true,
+    "requireUpstream": false,
+    "tagName": "core-${version}",
+    "commitMessage": "Bumping core version to ${version}",
+    "tagAnnotation": "Bumping core version to ${version}"
+  },
+  "npm": {
+    "publishPath": "./../../dist/core",
+    "tag": "latest"
+  }
+}
