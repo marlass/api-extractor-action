@@ -12,7 +12,6 @@ docs.zip
 
 # dependencies
 node_modules/
-package-lock.json
 
 # IDEs and editors
 /.idea
