@@ -15,6 +15,7 @@ Toolkit.run(async tools => {
   console.log('fdsfd');
   await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
+  config.body = tools.getFile('etc/storefront.api.md');
   await tools.github.issues.createComment(config);
   tools.store.save();
   // Action code
