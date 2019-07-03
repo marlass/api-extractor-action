@@ -11,10 +11,11 @@ Toolkit.run(async tools => {
   console.log(tools.store.get('prev'));
   tools.store.set('prev', tools.getFile('etc/storefront.api.md'));
   console.log('wat');
-  tools.store.save();
   await tools.runInWorkspace('yarn', ['install']);
+  console.log('fdsfd');
   await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
   await tools.github.issues.createComment(config);
+  tools.store.save();
   // Action code
 });
