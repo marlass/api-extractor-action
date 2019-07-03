@@ -9,7 +9,7 @@ Toolkit.run(async tools => {
     body: 'Hello world 2',
   };
   tools.store.set('prev', tools.getFile('etc/storefront.api.md'));
-  tools.runInWorkspace('./scripts/api-extractor.sh');
+  tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
   await tools.github.issues.createComment(config);
   // Action code
 });
