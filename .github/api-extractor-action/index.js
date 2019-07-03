@@ -20,7 +20,7 @@ Toolkit.run(async tools => {
       tools.token
     }`
   );
-  const fromMaster = master.text();
+  const fromMaster = await master.text();
   await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
   config.body = `old: ${tools.getFile('etc/storefront.api.md')}, from master: ${
