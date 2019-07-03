@@ -1,4 +1,6 @@
 const { Toolkit } = require('actions-toolkit');
+// const diff = require('git-diff');
+const fetch = require('node-fetch');
 
 Toolkit.run(async tools => {
   // console.log(tools.context.payload);
@@ -13,9 +15,17 @@ Toolkit.run(async tools => {
   console.log('wat');
   await tools.runInWorkspace('yarn', ['install']);
   console.log('fdsfd');
+  const master = await fetch(
+    `https://raw.githubusercontent.com/marlass/api-extractor-action/master/etc/storefront.api.md?token=${
+      tools.token
+    }`
+  );
+  const fromMaster = await master.json();
   await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
-  config.body = tools.getFile('etc/storefront.api.md');
+  config.body = `old: ${tools.getFile(
+    'etc/storefront.api.md'
+  )}, from master: ${fromMaster}`;
   await tools.github.issues.createComment(config);
   tools.store.save();
   // Action code

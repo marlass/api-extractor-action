@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "actions-toolkit": "^2.1.0"
+    "actions-toolkit": "^2.1.0",
+    "git-diff": "^2.0.6",
+    "node-fetch": "^2.6.0"
   }
 }
