@@ -5,10 +5,10 @@ Toolkit.run(async tools => {
   await tools.github.pulls.createComment({
     pull_number: tools.context.payload.pull_request.number,
     commit_id: tools.context.sha,
-    owner: tools.context.payload.sender,
+    owner: tools.context.payload.repository.owner.name,
     repo: tools.context.payload.repository.name,
-    path: null,
-    position: null,
+    path: './README.md',
+    position: 0,
     body: 'Hello world 2',
   });
   // Action code
