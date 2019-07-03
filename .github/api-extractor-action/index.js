@@ -15,16 +15,17 @@ Toolkit.run(async tools => {
   console.log('wat');
   await tools.runInWorkspace('yarn', ['install']);
   console.log('fdsfd');
-  const fromMaster = await fetch(
+  const master = await fetch(
     `https://raw.githubusercontent.com/marlass/api-extractor-action/master/etc/storefront.api.md?token=${
       tools.token
     }`
   );
+  const fromMaster = master.text();
   await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
-  config.body = `old: ${tools.getFile(
-    'etc/storefront.api.md'
-  )}, from master: ${fromMaster}`;
+  config.body = `old: ${tools.getFile('etc/storefront.api.md')}, from master: ${
+    fromMaster.body
+  }`;
   await tools.github.issues.createComment(config);
   tools.store.save();
   // Action code
