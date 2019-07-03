@@ -9,7 +9,8 @@ Toolkit.run(async tools => {
     body: 'Hello world 2',
   };
   console.log(tools.store.get('prev'));
-  await tools.store.set('prev', tools.getFile('etc/storefront.api.md'));
+  tools.store.set('prev', tools.getFile('etc/storefront.api.md'));
+  tools.store.save();
   await tools.runInWorkspace('yarn', ['install']);
   await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
