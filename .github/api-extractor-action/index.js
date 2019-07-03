@@ -1,6 +1,4 @@
-const { Toolkit } = require('actions-toolkit')
-const tools = new Toolkit({
-  event: ['pull_requests']
-})
+const { Toolkit } = require('actions-toolkit');
+const tools = new Toolkit();
 
 console.log(tools.context.payload);
