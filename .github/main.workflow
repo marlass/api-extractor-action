@@ -1,6 +1,6 @@
 workflow "API extractor" {
   resolves = ["Hello World"]
-  on = "pull_requests"
+  on = "pull_request"
 }
 
 action "Hello World" {
