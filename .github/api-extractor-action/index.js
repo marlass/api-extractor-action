@@ -23,9 +23,9 @@ Toolkit.run(async tools => {
   const fromMaster = await master.text();
   await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
-  config.body = `old: ${tools.getFile('etc/storefront.api.md')}, from master: ${
-    fromMaster.body
-  }`;
+  config.body = `old: ${tools.getFile(
+    'etc/storefront.api.md'
+  )}, from master: ${fromMaster}`;
   await tools.github.issues.createComment(config);
   tools.store.save();
   // Action code
