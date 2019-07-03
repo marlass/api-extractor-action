@@ -5,5 +5,5 @@ workflow "API extractor" {
 
 action "Hello World" {
   uses = "./.github/api-extractor-action"
-  secrets = ["GITHUB_TOKEN]
+  secrets = ["GITHUB_TOKEN"]
 }
