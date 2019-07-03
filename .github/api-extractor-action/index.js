@@ -8,6 +8,7 @@ Toolkit.run(async tools => {
     repo: tools.context.payload.repository.name,
     body: 'Hello world 2',
   };
+  console.log(tools.store.get('prev'));
   await tools.store.set('prev', tools.getFile('etc/storefront.api.md'));
   await tools.runInWorkspace('yarn', ['install']);
   await tools.runInWorkspace('yarn', ['build:core:lib']);
