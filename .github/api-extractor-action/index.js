@@ -3,15 +3,12 @@ const { Toolkit } = require('actions-toolkit');
 Toolkit.run(async tools => {
   console.log(tools.context.payload);
   const config = {
-    pull_number: tools.context.payload.pull_request.number,
-    commit_id: tools.context.sha,
+    issue_number: tools.context.payload.pull_request.number,
     owner: tools.context.payload.repository.owner.login,
     repo: tools.context.payload.repository.name,
-    path: './README.md',
-    position: 1,
     body: 'Hello world 2',
   };
   console.log(config);
-  await tools.github.pulls.createComment(config);
+  await tools.github.issues.createComment(config);
   // Action code
 });
