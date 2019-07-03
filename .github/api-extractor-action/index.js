@@ -1,5 +1,5 @@
 const { Toolkit } = require('actions-toolkit');
-// const diff = require('git-diff');
+const diff = require('git-diff');
 const fetch = require('node-fetch');
 
 Toolkit.run(async tools => {
@@ -10,22 +10,20 @@ Toolkit.run(async tools => {
     repo: tools.context.payload.repository.name,
     body: 'Hello world 2',
   };
-  console.log(tools.store.get('prev'));
   tools.store.set('prev', tools.getFile('etc/storefront.api.md'));
-  console.log('wat');
+  const prev = tools.getFile('etc/storefront.api.md');
   await tools.runInWorkspace('yarn', ['install']);
-  console.log('fdsfd');
-  const master = await fetch(
-    `https://raw.githubusercontent.com/marlass/api-extractor-action/master/etc/storefront.api.md?token=${
-      tools.token
-    }`
-  );
-  const fromMaster = await master.text();
+
   await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
-  config.body = `old: ${tools.getFile(
-    'etc/storefront.api.md'
-  )}, from master: ${fromMaster}`;
+  const curr = tools.getFile('etc/storefront.api.md');
+  config.body = `old: ${prev}, from master: ${curr}`;
+  const diff = diff(prev, curr);
+  config.body = `
+  \`\`\` diff
+  ${diff}
+  \`\`\`
+  `;
   await tools.github.issues.createComment(config);
   tools.store.save();
   // Action code
