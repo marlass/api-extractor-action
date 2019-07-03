@@ -6,7 +6,5 @@ Toolkit.run(async tools => {
     pull_number: tools.context.payload.pull_request.number,
     body: 'Hello world 2',
   });
-
-  tools.exit.success('We did it team!');
   // Action code
 });
