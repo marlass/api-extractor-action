@@ -1,6 +1,5 @@
 const { Toolkit } = require('actions-toolkit');
 const diff = require('git-diff');
-const fetch = require('node-fetch');
 
 Toolkit.run(async tools => {
   // console.log(tools.context.payload);
@@ -18,10 +17,10 @@ Toolkit.run(async tools => {
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
   const curr = tools.getFile('etc/storefront.api.md');
   config.body = `old: ${prev}, from master: ${curr}`;
-  const diff = diff(prev, curr);
+  const diff2 = diff(prev, curr);
   config.body = `
   \`\`\` diff
-  ${diff}
+  ${diff2}
   \`\`\`
   `;
   await tools.github.issues.createComment(config);
