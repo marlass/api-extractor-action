@@ -1,15 +1,12 @@
 const { Toolkit } = require('actions-toolkit');
 
-Toolkit.run(
-  async tools => {
-    console.log(tools.context.payload);
-    await tools.github.pulls.createComment({
-      pull_number: tools.context.payload.pull_request.number,
-      body: 'Hello world',
-    });
+Toolkit.run(async tools => {
+  console.log(tools.context.payload);
+  await tools.github.pulls.createComment({
+    pull_number: tools.context.payload.pull_request.number,
+    body: 'Hello world',
+  });
 
-    tools.exit.success('We did it team!');
-    // Action code
-  },
-  { event: 'push' }
-);
+  tools.exit.success('We did it team!');
+  // Action code
+});
