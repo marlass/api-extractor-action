@@ -8,7 +8,7 @@ Toolkit.run(async tools => {
     owner: tools.context.payload.repository.owner.login,
     repo: tools.context.payload.repository.name,
     path: './README.md',
-    position: 0,
+    position: 1,
     body: 'Hello world 2',
   };
   console.log(config);
