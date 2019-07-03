@@ -10,6 +10,7 @@ Toolkit.run(async tools => {
   };
   console.log(tools.store.get('prev'));
   tools.store.set('prev', tools.getFile('etc/storefront.api.md'));
+  console.log('wat');
   tools.store.save();
   await tools.runInWorkspace('yarn', ['install']);
   await tools.runInWorkspace('yarn', ['build:core:lib']);
