@@ -17,7 +17,7 @@ Toolkit.run(async tools => {
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
   const curr = tools.getFile('etc/storefront.api.md');
   config.body = `old: ${prev}, from master: ${curr}`;
-  const diff2 = diff(prev, curr);
+  const diff2 = diff(prev, curr, {flags: '--ignore-all-space'});
   config.body = `
   \`\`\` diff
   ${diff2}
