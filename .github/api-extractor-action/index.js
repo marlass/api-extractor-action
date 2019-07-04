@@ -1,5 +1,5 @@
 const { Toolkit } = require('actions-toolkit');
-const diff = require('diff');
+const diff = require('diff-lines');
 
 Toolkit.run(async tools => {
   // console.log(tools.context.payload);
@@ -17,7 +17,7 @@ Toolkit.run(async tools => {
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
   const curr = tools.getFile('etc/storefront.api.md');
   config.body = `old: ${prev}, from master: ${curr}`;
-  const diff2 = diff.diffLines(prev, curr, { ignoreWhitespace: true });
+  const diff2 = diff(prev, curr, { ignoreWhitespace: true });
   config.body = `
   \`\`\` diff
   ${diff2}
