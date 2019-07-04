@@ -18,6 +18,7 @@ Toolkit.run(async tools => {
   const curr = tools.getFile('etc/storefront.api.md');
   config.body = `old: ${prev}, from master: ${curr}`;
   const diff2 = diff(prev, curr, { ignoreWhitespace: true });
+  console.log(diff2);
   config.body = `
   \`\`\` diff
   ${diff2}
