@@ -38,24 +38,12 @@ Toolkit.run(async tools => {
   ${
     !diffStorefront
       ? 'nothing changed ;)'
-      : `
-    \`\`\` diff
-    ${diffStorefront}
-    \`\`\`
-    `
+      : '``` diff\n' + diffStorefront + '\n```'
   }
 
   ## Assets public API diff
 
-  ${
-    !diffAssets
-      ? 'nothing changed ;)'
-      : `
-    \`\`\` diff
-    ${diffAssets}
-    \`\`\`
-    `
-  }
+  ${!diffAssets ? 'nothing changed ;)' : '``` diff\n' + diffAssets + '\n```'}
   `;
   await tools.github.issues.createComment(config);
 });
