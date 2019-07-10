@@ -29,7 +29,7 @@ Toolkit.run(async tools => {
     repo: tools.context.payload.repository.name,
   });
 
-  console.log(comments.map(comment => comment.user));
+  console.log(comments.data.map(comment => comment.user));
 
   config.body = `
   ## Storefront public API diff
