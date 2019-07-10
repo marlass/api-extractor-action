@@ -18,10 +18,10 @@ Toolkit.run(async tools => {
   const assetsTargetBranch = tools.getFile('develop-clone/etc/assets.api.md');
   const diffStorefront = diff(storefrontPRBranch, storefrontTargetBranch, {
     n_surrounding: 2,
-  });
+  }).match('```(.*)```')[1];
   const diffAssets = diff(assetsPRBranch, assetsTargetBranch, {
     n_surrounding: 2,
-  });
+  }).match('```(.*)```')[1];
 
   const comments = await tools.github.issues.listComments({
     issue_number: tools.context.payload.pull_request.number,
