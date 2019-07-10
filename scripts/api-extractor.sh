@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+yarn
+
+yarn build:core:lib
 
 npm i -g @microsoft/api-extractor
 

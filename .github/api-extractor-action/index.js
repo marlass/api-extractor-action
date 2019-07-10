@@ -8,16 +8,10 @@ Toolkit.run(async tools => {
     repo: tools.context.payload.repository.name,
     body: 'Hello world 2',
   };
-  // const prev = tools.getFile('etc/storefront.api.md');
-  await tools.runInWorkspace('yarn', ['install']);
-
-  await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
   const inBranch = tools.getFile('etc/storefront.api.md');
   await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
   const developBranch = tools.getFile('develop-clone/etc/storefront.api.md');
-  // const curr = tools.getFile('etc/storefront.api.md');
-  // config.body = `old: ${prev}, from master: ${curr}`;
   const diff2 = diff(inBranch, developBranch, {
     n_surrounding: 2,
   });

@@ -4,13 +4,17 @@ set -e
 
 npm i -g @microsoft/api-extractor
 
-git clone https://github.com/SAP/cloud-commerce-spartacus-storefront.git develop-clone
+rm -rf develop-clone
+
+git clone https://github.com/SAP/cloud-commerce-spartacus-storefront.git develop-clone --depth 1
 
 cd develop-clone
 
 yarn
 
 yarn build:core:lib
+
+mkdir etc
 
 # Assets
 cp ./../api/api-extractor-assets.json ./dist/assets/api-extractor.json
