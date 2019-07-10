@@ -14,7 +14,7 @@ Toolkit.run(async tools => {
   await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
   // const curr = tools.getFile('etc/storefront.api.md');
-  config.body = `old: ${prev}, from master: ${curr}`;
+  // config.body = `old: ${prev}, from master: ${curr}`;
   const diff2 = diff(
     tools.getFile('.github/api-extractor-action/raport1.md'),
     tools.getFile('.github/api-extractor-action/raport2.md')
