@@ -30,6 +30,7 @@ Toolkit.run(async tools => {
   });
 
   console.log(comments.data.map(comment => comment.user));
+  console.log(comments.data);
 
   config.body = `
   ## Storefront public API diff
