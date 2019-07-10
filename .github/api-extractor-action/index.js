@@ -29,8 +29,8 @@ Toolkit.run(async tools => {
     repo: tools.context.payload.repository.name,
   });
 
-  const botComment = comments.data.filter(body =>
-    body.includes('PUBLIC API CHANGE DETECTION BOT')
+  const botComment = comments.data.filter(comment =>
+    comment.body.includes('PUBLIC API CHANGE DETECTION BOT')
   );
 
   config.body = `
