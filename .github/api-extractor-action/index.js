@@ -57,5 +57,4 @@ Toolkit.run(async tools => {
   }
   `;
   await tools.github.issues.createComment(config);
-  // Action code
 });
