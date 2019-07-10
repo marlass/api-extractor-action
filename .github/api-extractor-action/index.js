@@ -23,6 +23,14 @@ Toolkit.run(async tools => {
     n_surrounding: 2,
   });
 
+  console.log(
+    await tools.github.issues.listComments({
+      issue_number: tools.context.payload.pull_request.number,
+      owner: tools.context.payload.repository.owner.login,
+      repo: tools.context.payload.repository.name,
+    })
+  );
+
   config.body = `
   ## Storefront public API diff
 
