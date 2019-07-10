@@ -1,5 +1,5 @@
 const { Toolkit } = require('actions-toolkit');
-const diff = require('git-diff');
+const diff = require('diff-lines');
 
 Toolkit.run(async tools => {
   const config = {
@@ -17,7 +17,10 @@ Toolkit.run(async tools => {
   // config.body = `old: ${prev}, from master: ${curr}`;
   const diff2 = diff(
     tools.getFile('.github/api-extractor-action/raport1.md'),
-    tools.getFile('.github/api-extractor-action/raport2.md')
+    tools.getFile('.github/api-extractor-action/raport2.md'),
+    {
+      n_surrounding: 2,
+    }
   );
 
   console.log(diff2);
