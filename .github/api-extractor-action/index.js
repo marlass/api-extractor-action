@@ -14,15 +14,8 @@ Toolkit.run(async tools => {
   await tools.runInWorkspace('yarn', ['build:core:lib']);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
   const inBranch = tools.getFile('etc/storefront.api.md');
-  await tools.runInWorkspace('git', [
-    'clone',
-    'https://github.com/SAP/cloud-commerce-spartacus-storefront.git',
-    'develop',
-  ]);
-  await tools.runInWorkspace('cd', ['develop']);
-  await tools.runInWorkspace('yarn', ['install']);
-  await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
-  const developBranch = tools.getFile('develop/etc/storefront.api.md');
+  await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
+  const developBranch = tools.getFile('develop-clone/etc/storefront.api.md');
   // const curr = tools.getFile('etc/storefront.api.md');
   // config.body = `old: ${prev}, from master: ${curr}`;
   const diff2 = diff(inBranch, developBranch, {
