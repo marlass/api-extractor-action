@@ -29,10 +29,13 @@ Toolkit.run(async tools => {
     repo: tools.context.payload.repository.name,
   });
 
-  console.log(comments.data.map(comment => comment.user));
-  console.log(comments.data);
+  const botComment = comments.data.filter(body =>
+    body.includes('PUBLIC API CHANGE DETECTION BOT')
+  );
 
   config.body = `
+  # PUBLIC API CHANGE DETECTION BOT
+
   ## Storefront public API diff
 
   ${
@@ -45,5 +48,15 @@ Toolkit.run(async tools => {
 
   ${!diffAssets ? 'nothing changed ;)' : '``` diff\n' + diffAssets + '\n```'}
   `;
-  await tools.github.issues.createComment(config);
+
+  if (botComment && botComment.length) {
+    await tools.github.issues.updateComment({
+      comment_id: botComment[0].id,
+      owner: tools.context.payload.repository.owner.login,
+      repo: tools.context.payload.repository.name,
+      body: config.body,
+    });
+  } else {
+    await tools.github.issues.createComment(config);
+  }
 });
