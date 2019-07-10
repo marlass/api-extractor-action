@@ -9,18 +9,44 @@ Toolkit.run(async tools => {
     body: 'Hello world 2',
   };
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
-  const inBranch = tools.getFile('etc/storefront.api.md');
+  const storefrontPRBranch = tools.getFile('etc/storefront.api.md');
+  const assetsPRBranch = tools.getFile('etc/assets.api.md');
   await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
-  const developBranch = tools.getFile('develop-clone/etc/storefront.api.md');
-  const diff2 = diff(inBranch, developBranch, {
+  const storefrontTargetBranch = tools.getFile(
+    'develop-clone/etc/storefront.api.md'
+  );
+  const assetsTargetBranch = tools.getFile('develop-clone/etc/assets.api.md');
+  const diffStorefront = diff(storefrontPRBranch, storefrontTargetBranch, {
+    n_surrounding: 2,
+  });
+  const diffAssets = diff(assetsPRBranch, assetsTargetBranch, {
     n_surrounding: 2,
   });
 
-  console.log(diff2);
   config.body = `
-  \`\`\` diff
-  ${diff2}
-  \`\`\`
+  ## Storefront public API diff
+
+  ${
+    diffStorefront.length === 0
+      ? 'nothing changed ;)'
+      : `
+    \`\`\` diff
+    ${diffStorefront}
+    \`\`\`
+    `
+  }
+
+  ## Assets public API diff
+
+  ${
+    diffAssets.length === 0
+      ? 'nothing changed ;)'
+      : `
+    \`\`\` diff
+    ${diffAssets}
+    \`\`\`
+    `
+  }
   `;
   await tools.github.issues.createComment(config);
   // Action code
