@@ -27,7 +27,7 @@ Toolkit.run(async tools => {
   ## Storefront public API diff
 
   ${
-    diffStorefront.length === 0
+    diffStorefront
       ? 'nothing changed ;)'
       : `
     \`\`\` diff
@@ -39,7 +39,7 @@ Toolkit.run(async tools => {
   ## Assets public API diff
 
   ${
-    diffAssets.length === 0
+    diffAssets
       ? 'nothing changed ;)'
       : `
     \`\`\` diff
