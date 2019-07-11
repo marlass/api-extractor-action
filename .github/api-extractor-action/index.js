@@ -24,13 +24,11 @@ Toolkit.run(async tools => {
       n_surrounding: 2,
     })
   );
-  console.log(diffStorefront);
   const diffAssets = regex.exec(
     diff(assetsPRBranch, assetsTargetBranch, {
       n_surrounding: 2,
     })
   );
-  console.log(diffAssets);
 
   const comments = await tools.github.issues.listComments({
     issue_number: tools.context.payload.pull_request.number,
@@ -50,12 +48,12 @@ Toolkit.run(async tools => {
   ${
     !diffStorefront
       ? 'nothing changed ;)'
-      : '``` diff\n' + diffStorefront + '\n```'
+      : '``` diff\n' + diffStorefront[1] + '\n```'
   }
 
   ## Assets public API diff
 
-  ${!diffAssets ? 'nothing changed ;)' : '``` diff\n' + diffAssets + '\n```'}
+  ${!diffAssets ? 'nothing changed ;)' : '``` diff\n' + diffAssets[1] + '\n```'}
   `;
 
   if (botComment && botComment.length) {
