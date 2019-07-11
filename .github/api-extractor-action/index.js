@@ -37,13 +37,13 @@ Toolkit.run(async tools => {
   });
 
   const botComment = comments.data.filter(comment =>
-    comment.body.includes('PUBLIC API CHANGE DETECTION BOT')
+    comment.body.includes('Public API change detection bot')
   );
 
   config.body = `
-  # PUBLIC API CHANGE DETECTION BOT
+  ## Public API change detection bot
 
-  ## Storefront public API diff
+  ### @spartacus/storefront public API diff
 
   ${
     !diffStorefront
@@ -51,7 +51,7 @@ Toolkit.run(async tools => {
       : '``` diff\n' + diffStorefront[1] + '\n```'
   }
 
-  ## Assets public API diff
+  ### @spartacus/assets public API diff
 
   ${!diffAssets ? 'nothing changed ;)' : '``` diff\n' + diffAssets[1] + '\n```'}
   `;
