@@ -13,12 +13,11 @@ Toolkit.run(async tools => {
   let regex = /```ts\n(.*)```/ms;
   regex = /.*/ms;
 
-  const storefrontPRBranch = regex.exec(tools.getFile('etc/storefront.api.md'));
-  console.log(storefrontPRBranch);
+  const storefrontPRBranch = regex.exec(
+    tools.getFile('etc/storefront.api.md')
+  )[1];
 
-  const assetsPRBranch = regex.exec(tools.getFile('etc/assets.api.md'));
-  // console.log(tools.getFile('etc/assets.api.md'));
-  console.log(assetsPRBranch);
+  const assetsPRBranch = regex.exec(tools.getFile('etc/assets.api.md'))[1];
   await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
   const storefrontTargetBranch = regex.exec(
     tools.getFile('develop-clone/etc/storefront.api.md')
