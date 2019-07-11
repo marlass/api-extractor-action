@@ -14,8 +14,10 @@ Toolkit.run(async tools => {
   regex = /.*/gms;
 
   const storefrontPRBranch = regex.exec(tools.getFile('etc/storefront.api.md'));
-  const assetsPRBranch = regex.exec(tools.getFile('etc/assets.api.md'))[1];
-  console.log(tools.getFile('etc/assets.api.md'));
+  console.log(storefrontPRBranch);
+
+  const assetsPRBranch = regex.exec(tools.getFile('etc/assets.api.md'));
+  // console.log(tools.getFile('etc/assets.api.md'));
   console.log(assetsPRBranch);
   await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
   const storefrontTargetBranch = regex.exec(
