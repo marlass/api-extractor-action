@@ -10,18 +10,21 @@ Toolkit.run(async tools => {
   };
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
 
-  let regex = /```ts\n(.*)```/ms;
+  let regex = /```ts\n(.*)```/gms;
 
   const storefrontPRBranch = regex.exec(
     tools.getFile('etc/storefront.api.md')
   )[1];
 
+  regex = /```ts\n(.*)```/gms;
+
   const assetsPRBranch = regex.exec(tools.getFile('etc/assets.api.md'))[1];
   await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
+  regex = /```ts\n(.*)```/gms;
   const storefrontTargetBranch = regex.exec(
     tools.getFile('develop-clone/etc/storefront.api.md')
   )[1];
-
+  regex = /```ts\n(.*)```/gms;
   const assetsTargetBranch = regex.exec(
     tools.getFile('develop-clone/etc/assets.api.md')
   )[1];
