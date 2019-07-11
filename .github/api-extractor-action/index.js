@@ -23,12 +23,14 @@ Toolkit.run(async tools => {
     diff(storefrontPRBranch, storefrontTargetBranch, {
       n_surrounding: 2,
     })
-  )[1];
+  );
+  console.log(diffStorefront);
   const diffAssets = regex.exec(
     diff(assetsPRBranch, assetsTargetBranch, {
       n_surrounding: 2,
     })
-  )[1];
+  );
+  console.log(diffAssets);
 
   const comments = await tools.github.issues.listComments({
     issue_number: tools.context.payload.pull_request.number,
