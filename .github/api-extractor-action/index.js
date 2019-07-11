@@ -11,7 +11,6 @@ Toolkit.run(async tools => {
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
 
   let regex = /```ts\n(.*)```/ms;
-  regex = /.*/ms;
 
   const storefrontPRBranch = regex.exec(
     tools.getFile('etc/storefront.api.md')
@@ -26,6 +25,9 @@ Toolkit.run(async tools => {
   const assetsTargetBranch = regex.exec(
     tools.getFile('develop-clone/etc/assets.api.md')
   )[1];
+
+  console.log(typeof storefrontPRBranch);
+  console.log(typeof storefrontTargetBranch);
 
   const diffStorefront = diff(storefrontPRBranch, storefrontTargetBranch, {
     n_surrounding: 2,
