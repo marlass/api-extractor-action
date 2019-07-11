@@ -10,13 +10,11 @@ Toolkit.run(async tools => {
   };
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
 
-  let regex = /```ts\n?([\s\S]*)```/ms;
+  let regex = /```ts(\r\n|\n|\r)?([\s\S]*)```/ms;
 
   const storefrontPRBranch = regex.exec(
     tools.getFile('etc/storefront.api.md')
   )[1];
-  // console.log(storefrontPRBranch);
-  // console.log(regex.test(tools.getFile('etc/storefront.api.md')));
   const assetsPRBranch = regex.exec(tools.getFile('etc/assets.api.md'))[1];
   await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
   const storefrontTargetBranch = regex.exec(
@@ -25,9 +23,6 @@ Toolkit.run(async tools => {
   const assetsTargetBranch = regex.exec(
     tools.getFile('develop-clone/etc/assets.api.md')
   )[1];
-
-  // console.log(typeof storefrontPRBranch);
-  // console.log(typeof storefrontTargetBranch);
 
   const diffStorefront = diff(storefrontPRBranch, storefrontTargetBranch, {
     n_surrounding: 2,
