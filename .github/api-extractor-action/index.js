@@ -10,7 +10,7 @@ Toolkit.run(async tools => {
   };
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
 
-  let regex = /```ts\n(.*)```/ms;
+  let regex = /```ts\n([\s\S]*)```/ms;
 
   const storefrontPRBranch = regex.exec(tools.getFile('etc/storefront.api.md'));
   console.log(storefrontPRBranch);
