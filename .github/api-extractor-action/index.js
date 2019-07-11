@@ -15,13 +15,20 @@ Toolkit.run(async tools => {
   const storefrontTargetBranch = tools.getFile(
     'develop-clone/etc/storefront.api.md'
   );
+
+  const regex = /```ts\n(.*)```/gms;
+
   const assetsTargetBranch = tools.getFile('develop-clone/etc/assets.api.md');
-  const diffStorefront = diff(storefrontPRBranch, storefrontTargetBranch, {
-    n_surrounding: 2,
-  }).match('```ts(.*)```')[1];
-  const diffAssets = diff(assetsPRBranch, assetsTargetBranch, {
-    n_surrounding: 2,
-  }).match('```ts(.*)```')[1];
+  const diffStorefront = regex.exec(
+    diff(storefrontPRBranch, storefrontTargetBranch, {
+      n_surrounding: 2,
+    })
+  );
+  const diffAssets = regex.exec(
+    diff(assetsPRBranch, assetsTargetBranch, {
+      n_surrounding: 2,
+    })
+  );
 
   const comments = await tools.github.issues.listComments({
     issue_number: tools.context.payload.pull_request.number,
