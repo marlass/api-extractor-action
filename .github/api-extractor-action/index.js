@@ -9,26 +9,28 @@ Toolkit.run(async tools => {
     body: 'Hello world 2',
   };
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
-  const storefrontPRBranch = tools.getFile('etc/storefront.api.md');
-  const assetsPRBranch = tools.getFile('etc/assets.api.md');
-  await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
-  const storefrontTargetBranch = tools.getFile(
-    'develop-clone/etc/storefront.api.md'
-  );
 
   const regex = /```ts\n(.*)```/gms;
 
-  const assetsTargetBranch = tools.getFile('develop-clone/etc/assets.api.md');
-  const diffStorefront = regex.exec(
-    diff(storefrontPRBranch, storefrontTargetBranch, {
-      n_surrounding: 2,
-    })
-  );
-  const diffAssets = regex.exec(
-    diff(assetsPRBranch, assetsTargetBranch, {
-      n_surrounding: 2,
-    })
-  );
+  const storefrontPRBranch = regex.exec(
+    tools.getFile('etc/storefront.api.md')
+  )[1];
+  const assetsPRBranch = regex.exec(tools.getFile('etc/assets.api.md'))[1];
+  await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
+  const storefrontTargetBranch = regex.exec(
+    tools.getFile('develop-clone/etc/storefront.api.md')
+  )[1];
+
+  const assetsTargetBranch = regex.exec(
+    tools.getFile('develop-clone/etc/assets.api.md')
+  )[1];
+
+  const diffStorefront = diff(storefrontPRBranch, storefrontTargetBranch, {
+    n_surrounding: 2,
+  });
+  const diffAssets = diff(assetsPRBranch, assetsTargetBranch, {
+    n_surrounding: 2,
+  });
 
   const comments = await tools.github.issues.listComments({
     issue_number: tools.context.payload.pull_request.number,
@@ -48,12 +50,12 @@ Toolkit.run(async tools => {
   ${
     !diffStorefront
       ? 'nothing changed ;)'
-      : '``` diff\n' + diffStorefront[1] + '\n```'
+      : '``` diff\n' + diffStorefront + '\n```'
   }
 
   ### @spartacus/assets public API diff
 
-  ${!diffAssets ? 'nothing changed ;)' : '``` diff\n' + diffAssets[1] + '\n```'}
+  ${!diffAssets ? 'nothing changed ;)' : '``` diff\n' + diffAssets + '\n```'}
   `;
 
   if (botComment && botComment.length) {
