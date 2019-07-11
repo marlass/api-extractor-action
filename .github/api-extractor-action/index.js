@@ -6,7 +6,7 @@ Toolkit.run(async tools => {
     issue_number: tools.context.payload.pull_request.number,
     owner: tools.context.payload.repository.owner.login,
     repo: tools.context.payload.repository.name,
-    body: 'Hello world 2',
+    body: '',
   };
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
 
