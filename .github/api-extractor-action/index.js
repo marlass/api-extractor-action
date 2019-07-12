@@ -92,7 +92,7 @@ Toolkit.run(
     printReport(generateCommentBody(libsDiffs));
   },
   {
-    event: ['pull_request.opened', 'pull_request.synchronized'],
+    event: ['pull_request.opened', 'pull_request.synchronize'],
     secrets: ['GITHUB_TOKEN'],
   }
 );
