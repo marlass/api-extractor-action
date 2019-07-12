@@ -6,81 +6,85 @@ Toolkit.run(async tools => {
   const issueNumber = tools.context.payload.pull_request.number;
   const owner = tools.context.payload.repository.owner.login;
   const repo = tools.context.payload.repository.name;
-  const regexForTSSnippetInMarkdown = /```ts([\s\S]*)```/ms;
-  console.log(tools.context.payload.pull_request);
+  const targetBranch = tools.context.payload.pull_request.base.ref;
+  const reportHeader = 'Public API change detection bot';
 
-  const config = {
-    issue_number: issueNumber,
-    owner,
-    repo,
-    body: '',
-  };
+  function extractSnippetFromFile(filename) {
+    const regexForTSSnippetInMarkdown = /```ts([\s\S]*)```/ms;
+    return regexForTSSnippetInMarkdown
+      .exec(normalizeNewline(tools.getFile(filename)))[1]
+      .trim();
+  }
+
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
-
-  const storefrontPRBranch = regex
-    .exec(normalizeNewline(tools.getFile('etc/storefront.api.md')))[1]
-    .trim();
-  const assetsPRBranch = regex
-    .exec(normalizeNewline(tools.getFile('etc/assets.api.md')))[1]
-    .trim();
   await tools.runInWorkspace('sh', [
     './scripts/api-extractor-for-branch.sh',
     targetBranch,
   ]);
-  const storefrontTargetBranch = regex
-    .exec(
-      normalizeNewline(
-        tools.getFile('target-branch-clone/etc/storefront.api.md')
-      )
-    )[1]
-    .trim();
-  const assetsTargetBranch = regex
-    .exec(
-      normalizeNewline(tools.getFile('target-branch-clone/etc/assets.api.md'))
-    )[1]
-    .trim();
 
-  const diffStorefront = diff(storefrontPRBranch, storefrontTargetBranch, {
-    n_surrounding: 2,
-  });
-  const diffAssets = diff(assetsPRBranch, assetsTargetBranch, {
-    n_surrounding: 2,
-  });
+  const libraries = ['assets', 'storefront'];
 
-  const comments = await tools.github.issues.listComments({
-    issue_number: tools.context.payload.pull_request.number,
-    owner: tools.context.payload.repository.owner.login,
-    repo: tools.context.payload.repository.name,
+  const libsDiffs = libraries.map(library => {
+    const sourceBranchReportDirectory = `etc`;
+    const targetBranchReportDirectory = `target-branch-clone/etc`;
+    const sourceBranchSnippet = extractSnippetFromFile(
+      `${sourceBranchReportDirectory}/${library}.api.md`
+    );
+    const targetBranchSnippet = extractSnippetFromFile(
+      `${targetBranchReportDirectory}/${library}.api.md`
+    );
+    return {
+      library,
+      diff: diff(sourceBranchSnippet, targetBranchSnippet, {
+        n_surrounding: 2,
+      }),
+    };
   });
 
-  const botComment = comments.data.filter(comment =>
-    comment.body.includes('Public API change detection bot')
-  );
+  function generateCommentBody(libsDiffs) {
+    return `
+    ## ${reportHeader}
 
-  config.body = `
-  ## Public API change detection bot
+    ${libsDiffs.map(libDiff => `
+      ### @spartacus/${libDiff.library} public API diff
 
-  ### @spartacus/storefront public API diff
+      ${
+        !libDiff.diff
+          ? 'nothing changed ;)'
+          : '``` diff\n' + libDiff.diff + '\n```'
+      }
 
-  ${
-    !diffStorefront
-      ? 'nothing changed ;)'
-      : '``` diff\n' + diffStorefront + '\n```'
+    `)}
+    `;
   }
 
-  ### @spartacus/assets public API diff
-
-  ${!diffAssets ? 'nothing changed ;)' : '``` diff\n' + diffAssets + '\n```'}
-  `;
-
-  if (botComment && botComment.length) {
-    await tools.github.issues.updateComment({
-      comment_id: botComment[0].id,
-      owner: tools.context.payload.repository.owner.login,
-      repo: tools.context.payload.repository.name,
-      body: config.body,
+  function printReport(body) {
+    const comments = await tools.github.issues.listComments({
+      issue_number: issueNumber,
+      owner,
+      repo,
     });
-  } else {
-    await tools.github.issues.createComment(config);
+
+    const botComment = comments.data.filter(comment =>
+      comment.body.includes(reportHeader)
+    );
+
+    if (botComment && botComment.length) {
+      await tools.github.issues.updateComment({
+        comment_id: botComment[0].id,
+        owner,
+        repo,
+        body,
+      });
+    } else {
+      await tools.github.issues.createComment({
+        issue_number: issueNumber,
+        owner,
+        repo,
+        body,
+      });
+    }
   }
+
+  printReport(generateCommentBody(libsDiffs));
 });
