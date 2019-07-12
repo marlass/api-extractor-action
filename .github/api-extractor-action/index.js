@@ -42,12 +42,13 @@ Toolkit.run(async tools => {
   });
 
   function generateCommentBody(libsDiffs) {
-    return `
-    ## ${reportHeader}
-
-  ${libsDiffs
-    .map(
-      libDiff => `
+    return (
+      '## ' +
+      reportHeader +
+      '\n' +
+      libsDiffs
+        .map(
+          libDiff => `
     ### @spartacus/${libDiff.library} public API diff
 
     ${
@@ -57,9 +58,9 @@ Toolkit.run(async tools => {
     }
 
   `
-    )
-    .join('')}
-    `;
+        )
+        .join('')
+    );
   }
 
   async function printReport(body) {
