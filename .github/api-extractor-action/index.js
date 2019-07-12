@@ -45,7 +45,8 @@ Toolkit.run(async tools => {
     return `
     ## ${reportHeader}
 
-    ${libsDiffs.map(libDiff => `
+    ${libsDiffs.map(
+      libDiff => `
       ### @spartacus/${libDiff.library} public API diff
 
       ${
@@ -54,11 +55,12 @@ Toolkit.run(async tools => {
           : '``` diff\n' + libDiff.diff + '\n```'
       }
 
-    `)}
+    `
+    )}
     `;
   }
 
-  function printReport(body) {
+  async function printReport(body) {
     const comments = await tools.github.issues.listComments({
       issue_number: issueNumber,
       owner,
