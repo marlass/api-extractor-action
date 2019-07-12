@@ -10,8 +10,6 @@ rm -rf target-branch-clone
 git clone --single-branch --branch $BRANCH https://github.com/SAP/cloud-commerce-spartacus-storefront.git target-branch-clone --depth 1
 cd target-branch-clone
 
-echo $BRANCH
-
 # Install dependencies and build lib
 yarn
 yarn build:core:lib
