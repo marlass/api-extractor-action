@@ -1,5 +1,6 @@
 const { Toolkit } = require('actions-toolkit');
 const diff = require('diff-lines');
+const normalizeNewline = require('normalize-newline');
 
 Toolkit.run(async tools => {
   const config = {
@@ -12,17 +13,21 @@ Toolkit.run(async tools => {
 
   let regex = /```ts([\s\S]*)```/ms;
 
-  const storefrontPRBranch = regex.exec(
-    tools.getFile('etc/storefront.api.md')
-  )[1].trim();
-  const assetsPRBranch = regex.exec(tools.getFile('etc/assets.api.md'))[1].trim();
+  const storefrontPRBranch = regex
+    .exec(normalizeNewline(tools.getFile('etc/storefront.api.md')))[1]
+    .trim();
+  const assetsPRBranch = regex
+    .exec(normalizeNewline(tools.getFile('etc/assets.api.md')))[1]
+    .trim();
   await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
-  const storefrontTargetBranch = regex.exec(
-    tools.getFile('develop-clone/etc/storefront.api.md')
-  )[1].trim();
-  const assetsTargetBranch = regex.exec(
-    tools.getFile('develop-clone/etc/assets.api.md')
-  )[1].trim();
+  const storefrontTargetBranch = regex
+    .exec(
+      normalizeNewline(tools.getFile('develop-clone/etc/storefront.api.md'))
+    )[1]
+    .trim();
+  const assetsTargetBranch = regex
+    .exec(normalizeNewline(tools.getFile('develop-clone/etc/assets.api.md')))[1]
+    .trim();
 
   const diffStorefront = diff(storefrontPRBranch, storefrontTargetBranch, {
     n_surrounding: 2,
