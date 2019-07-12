@@ -3,15 +3,19 @@ const diff = require('diff-lines');
 const normalizeNewline = require('normalize-newline');
 
 Toolkit.run(async tools => {
+  const issueNumber = tools.context.payload.pull_request.number;
+  const owner = tools.context.payload.repository.owner.login;
+  const repo = tools.context.payload.repository.name;
+  const regexForTSSnippetInMarkdown = /```ts([\s\S]*)```/ms;
+  console.log(tools.context.payload.pull_request);
+
   const config = {
-    issue_number: tools.context.payload.pull_request.number,
-    owner: tools.context.payload.repository.owner.login,
-    repo: tools.context.payload.repository.name,
+    issue_number: issueNumber,
+    owner,
+    repo,
     body: '',
   };
   await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
-
-  let regex = /```ts([\s\S]*)```/ms;
 
   const storefrontPRBranch = regex
     .exec(normalizeNewline(tools.getFile('etc/storefront.api.md')))[1]
@@ -19,14 +23,21 @@ Toolkit.run(async tools => {
   const assetsPRBranch = regex
     .exec(normalizeNewline(tools.getFile('etc/assets.api.md')))[1]
     .trim();
-  await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
+  await tools.runInWorkspace('sh', [
+    './scripts/api-extractor-for-branch.sh',
+    targetBranch,
+  ]);
   const storefrontTargetBranch = regex
     .exec(
-      normalizeNewline(tools.getFile('develop-clone/etc/storefront.api.md'))
+      normalizeNewline(
+        tools.getFile('target-branch-clone/etc/storefront.api.md')
+      )
     )[1]
     .trim();
   const assetsTargetBranch = regex
-    .exec(normalizeNewline(tools.getFile('develop-clone/etc/assets.api.md')))[1]
+    .exec(
+      normalizeNewline(tools.getFile('target-branch-clone/etc/assets.api.md'))
+    )[1]
     .trim();
 
   const diffStorefront = diff(storefrontPRBranch, storefrontTargetBranch, {
