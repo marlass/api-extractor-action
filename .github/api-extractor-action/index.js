@@ -2,91 +2,97 @@ const { Toolkit } = require('actions-toolkit');
 const diff = require('diff-lines');
 const normalizeNewline = require('normalize-newline');
 
-Toolkit.run(async tools => {
-  const issueNumber = tools.context.payload.pull_request.number;
-  const owner = tools.context.payload.repository.owner.login;
-  const repo = tools.context.payload.repository.name;
-  const targetBranch = tools.context.payload.pull_request.base.ref;
-  const reportHeader = 'Public API change detection bot';
+Toolkit.run(
+  async tools => {
+    const issueNumber = tools.context.payload.pull_request.number;
+    const owner = tools.context.payload.repository.owner.login;
+    const repo = tools.context.payload.repository.name;
+    const targetBranch = tools.context.payload.pull_request.base.ref;
+    const reportHeader = 'Public API change detection bot';
 
-  function extractSnippetFromFile(filename) {
-    const regexForTSSnippetInMarkdown = /```ts([\s\S]*)```/ms;
-    return regexForTSSnippetInMarkdown
-      .exec(normalizeNewline(tools.getFile(filename)))[1]
-      .trim();
-  }
+    function extractSnippetFromFile(filename) {
+      const regexForTSSnippetInMarkdown = /```ts([\s\S]*)```/ms;
+      return regexForTSSnippetInMarkdown
+        .exec(normalizeNewline(tools.getFile(filename)))[1]
+        .trim();
+    }
 
-  await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
-  await tools.runInWorkspace('sh', [
-    './scripts/api-extractor-for-branch.sh',
-    targetBranch,
-  ]);
+    await tools.runInWorkspace('sh', ['./scripts/api-extractor.sh']);
+    await tools.runInWorkspace('sh', [
+      './scripts/api-extractor-for-branch.sh',
+      targetBranch,
+    ]);
 
-  const libraries = ['assets', 'storefront'];
+    const libraries = ['assets', 'storefront'];
 
-  const libsDiffs = libraries.map(library => {
-    const sourceBranchReportDirectory = `etc`;
-    const targetBranchReportDirectory = `target-branch-clone/etc`;
-    const sourceBranchSnippet = extractSnippetFromFile(
-      `${sourceBranchReportDirectory}/${library}.api.md`
-    );
-    const targetBranchSnippet = extractSnippetFromFile(
-      `${targetBranchReportDirectory}/${library}.api.md`
-    );
-    return {
-      library,
-      diff: diff(sourceBranchSnippet, targetBranchSnippet, {
-        n_surrounding: 2,
-      }),
-    };
-  });
-
-  function generateCommentBody(libsDiffs) {
-    return (
-      '## ' +
-      reportHeader +
-      '\n' +
-      libsDiffs
-        .map(
-          libDiff =>
-            '### @spartacus/' +
-            libDiff.library +
-            ' public API diff\n' +
-            (!libDiff.diff
-              ? 'nothing changed ;)'
-              : '``` diff\n' + libDiff.diff + '\n```')
-        )
-        .join('\n')
-    );
-  }
-
-  async function printReport(body) {
-    const comments = await tools.github.issues.listComments({
-      issue_number: issueNumber,
-      owner,
-      repo,
+    const libsDiffs = libraries.map(library => {
+      const sourceBranchReportDirectory = `etc`;
+      const targetBranchReportDirectory = `target-branch-clone/etc`;
+      const sourceBranchSnippet = extractSnippetFromFile(
+        `${sourceBranchReportDirectory}/${library}.api.md`
+      );
+      const targetBranchSnippet = extractSnippetFromFile(
+        `${targetBranchReportDirectory}/${library}.api.md`
+      );
+      return {
+        library,
+        diff: diff(sourceBranchSnippet, targetBranchSnippet, {
+          n_surrounding: 2,
+        }),
+      };
     });
 
-    const botComment = comments.data.filter(comment =>
-      comment.body.includes(reportHeader)
-    );
+    function generateCommentBody(libsDiffs) {
+      return (
+        '## ' +
+        reportHeader +
+        '\n' +
+        libsDiffs
+          .map(
+            libDiff =>
+              '### @spartacus/' +
+              libDiff.library +
+              ' public API diff\n' +
+              (!libDiff.diff
+                ? 'nothing changed ;)'
+                : '``` diff\n' + libDiff.diff + '\n```')
+          )
+          .join('\n')
+      );
+    }
 
-    if (botComment && botComment.length) {
-      await tools.github.issues.updateComment({
-        comment_id: botComment[0].id,
-        owner,
-        repo,
-        body,
-      });
-    } else {
-      await tools.github.issues.createComment({
+    async function printReport(body) {
+      const comments = await tools.github.issues.listComments({
         issue_number: issueNumber,
         owner,
         repo,
-        body,
       });
-    }
-  }
 
-  printReport(generateCommentBody(libsDiffs));
-});
+      const botComment = comments.data.filter(comment =>
+        comment.body.includes(reportHeader)
+      );
+
+      if (botComment && botComment.length) {
+        await tools.github.issues.updateComment({
+          comment_id: botComment[0].id,
+          owner,
+          repo,
+          body,
+        });
+      } else {
+        await tools.github.issues.createComment({
+          issue_number: issueNumber,
+          owner,
+          repo,
+          body,
+        });
+      }
+    }
+
+    printReport(generateCommentBody(libsDiffs));
+  },
+  {
+    event: ['pull_request.opened', 'pull_request.synchronized'],
+    secrets: ['GITHUB_TOKEN'],
+  }
+);
