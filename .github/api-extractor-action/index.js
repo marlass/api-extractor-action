@@ -14,15 +14,15 @@ Toolkit.run(async tools => {
 
   const storefrontPRBranch = regex.exec(
     tools.getFile('etc/storefront.api.md')
-  )[1];
-  const assetsPRBranch = regex.exec(tools.getFile('etc/assets.api.md'))[1];
+  )[1].trim();
+  const assetsPRBranch = regex.exec(tools.getFile('etc/assets.api.md'))[1].trim();
   await tools.runInWorkspace('sh', ['./scripts/api-extractor-for-develop.sh']);
   const storefrontTargetBranch = regex.exec(
     tools.getFile('develop-clone/etc/storefront.api.md')
-  )[1];
+  )[1].trim();
   const assetsTargetBranch = regex.exec(
     tools.getFile('develop-clone/etc/assets.api.md')
-  )[1];
+  )[1].trim();
 
   const diffStorefront = diff(storefrontPRBranch, storefrontTargetBranch, {
     n_surrounding: 2,
