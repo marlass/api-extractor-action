@@ -45,18 +45,20 @@ Toolkit.run(async tools => {
     return `
     ## ${reportHeader}
 
-    ${libsDiffs.map(
+  ${libsDiffs
+    .map(
       libDiff => `
-      ### @spartacus/${libDiff.library} public API diff
+    ### @spartacus/${libDiff.library} public API diff
 
-      ${
-        !libDiff.diff
-          ? 'nothing changed ;)'
-          : '``` diff\n' + libDiff.diff + '\n```'
-      }
+    ${
+      !libDiff.diff
+        ? 'nothing changed ;)'
+        : '``` diff\n' + libDiff.diff + '\n```'
+    }
 
-    `
-    )}
+  `
+    )
+    .join('')}
     `;
   }
 
