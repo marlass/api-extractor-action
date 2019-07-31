@@ -4,13 +4,12 @@ const normalizeNewline = require('normalize-newline');
 
 Toolkit.run(
   async tools => {
+    console.log(tools.context.payload.head);
     const issueNumber = tools.context.payload.pull_request.number;
     const owner = tools.context.payload.repository.owner.login;
     const repo = tools.context.payload.repository.name;
     const targetBranch = tools.context.payload.pull_request.base.ref;
     const reportHeader = 'Public API change detection bot';
-
-    console.log(tools.context.payload.head);
 
     function extractSnippetFromFile(filename) {
       const regexForTSSnippetInMarkdown = /```ts([\s\S]*)```/ms;
