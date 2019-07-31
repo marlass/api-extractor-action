@@ -10,6 +10,8 @@ Toolkit.run(
     const targetBranch = tools.context.payload.pull_request.base.ref;
     const reportHeader = 'Public API change detection bot';
 
+    console.log(tools.context.payload.head);
+
     function extractSnippetFromFile(filename) {
       const regexForTSSnippetInMarkdown = /```ts([\s\S]*)```/ms;
       return regexForTSSnippetInMarkdown
@@ -21,7 +23,7 @@ Toolkit.run(
     await tools.runInWorkspace('sh', [
       './scripts/api-extractor-for-branch.sh',
       targetBranch,
-      'target'
+      'target',
     ]);
 
     const libraries = ['assets', 'storefront'];
@@ -93,7 +95,7 @@ Toolkit.run(
     printReport(generateCommentBody(libsDiffs));
   },
   {
-    event: ['pull_request.opened', 'pull_request.synchronize'],
+    event: ['push'],
     secrets: ['GITHUB_TOKEN'],
   }
 );
