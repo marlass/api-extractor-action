@@ -7,11 +7,13 @@ Toolkit.run(
     const owner = tools.context.payload.repository.owner.login;
     const repo = tools.context.payload.repository.name;
 
-    const relatedPullRequests = await tools.github.pulls.list({
+    const response = await tools.github.pulls.list({
       owner,
       repo,
       head: tools.context.payload.ref.replace('refs/heads/', ''),
     });
+
+    const relatedPullRequests = response.data;
 
     if (relatedPullRequests.length === 0) {
       return;
