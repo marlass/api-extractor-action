@@ -7,16 +7,20 @@ Toolkit.run(
     const owner = tools.context.payload.repository.owner.login;
     const repo = tools.context.payload.repository.name;
 
-    const result = await tools.github.pulls.list({
+    const relatedPullRequests = await tools.github.pulls.list({
       owner,
       repo,
       head: tools.context.payload.ref.replace('refs/heads/', ''),
     });
 
-    console.log(result.data);
+    if (relatedPullRequests.length === 0) {
+      return;
+    }
 
-    const issueNumber = tools.context.payload.pull_request.number;
-    const targetBranch = tools.context.payload.pull_request.base.ref;
+    const relatedPR = relatedPullRequests[0];
+
+    const issueNumber = relatedPR.number;
+    const targetBranch = relatedPR.base.ref;
     const reportHeader = 'Public API change detection bot';
 
     function extractSnippetFromFile(filename) {
