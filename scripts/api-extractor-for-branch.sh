@@ -16,8 +16,7 @@ fi
 npm i -g @microsoft/api-extractor
 
 if [ "$DIR" != "self" ] ; then
-  CLONE_DIR="$DIR"
-  CLONE_DIR+="-branch-clone"
+  CLONE_DIR="$DIR-branch-clone"
   rm -rf $CLONE_DIR
   git clone --single-branch --branch $BRANCH https://github.com/SAP/cloud-commerce-spartacus-storefront.git $CLONE_DIR --depth 1
   cd $CLONE_DIR
