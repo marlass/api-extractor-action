@@ -9,6 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "actions-toolkit": "^2.1.0"
+    "actions-toolkit": "^2.1.0",
+    "diff": "^4.0.1",
+    "diff-lines": "^1.1.1",
+    "git-diff": "^2.0.6",
+    "node-fetch": "^2.6.0",
+    "normalize-newline": "^3.0.0"
   }
 }
