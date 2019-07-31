@@ -4,7 +4,7 @@ const normalizeNewline = require('normalize-newline');
 
 Toolkit.run(
   async tools => {
-    console.log(tools.context.payload.head);
+    console.log(tools.context.payload);
     const issueNumber = tools.context.payload.pull_request.number;
     const owner = tools.context.payload.repository.owner.login;
     const repo = tools.context.payload.repository.name;
