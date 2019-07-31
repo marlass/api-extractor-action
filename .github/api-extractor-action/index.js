@@ -10,7 +10,7 @@ Toolkit.run(
     const result = await tools.github.pulls.list({
       owner,
       repo,
-      // base: tools.context.payload.ref.replace('refs/heads/', ''),
+      head: tools.context.payload.ref.replace('refs/heads/', ''),
     });
 
     console.log(result.data);
