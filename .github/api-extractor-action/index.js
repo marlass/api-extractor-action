@@ -13,7 +13,7 @@ Toolkit.run(
       base: tools.context.payload.ref.replace('refs/heads/', ''),
     });
 
-    console.log(result);
+    console.log(result.data);
 
     const issueNumber = tools.context.payload.pull_request.number;
     const targetBranch = tools.context.payload.pull_request.base.ref;
